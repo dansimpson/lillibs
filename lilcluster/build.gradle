@@ -1,0 +1,27 @@
+plugins {
+  id 'java'
+  id 'eclipse'
+}
+
+dependencies {
+  compile("org.slf4j:slf4j-api:${versions.slf4j}")
+  compile("io.netty:netty-handler:${versions.netty}") {
+    exclude(module: 'lzma-java')
+    exclude(module: 'protobuf-java')
+    exclude(module: 'protobuf-javanano')
+    exclude(module: 'jzlib')
+    exclude(module: 'compress-lzf')
+    exclude(module: 'lz4')
+    exclude(module: 'jboss-marshalling')
+  }
+  testCompile "junit:junit:4.12"
+  testCompile "org.slf4j:slf4j-simple:${versions.slf4j}"
+}
+
+test {
+  testLogging {
+    showStandardStreams = true
+    events "passed", "skipped", "failed"
+    exceptionFormat = 'full'
+  }
+}

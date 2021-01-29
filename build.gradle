@@ -1,0 +1,71 @@
+plugins {
+  id 'java'
+  id 'eclipse'
+  id 'com.diffplug.spotless' version '5.6.1'
+}
+
+spotless {
+  java {
+    importOrder()
+    removeUnusedImports()
+    googleJavaFormat()
+    indentWithSpaces(4)
+  }
+}
+
+ext {
+  versions = [
+    'netty': '4.1.58.Final',
+    'slf4j': '1.7.30'
+  ]
+}
+
+allprojects {
+  group = 'com.github.dansimpson'
+  version = '1.0.0'
+  description = "LilLib ${project.path}"
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+}
+
+subprojects {
+  apply plugin: 'maven-publish'
+
+  sourceCompatibility = 11
+  sourceSets.test {
+    resources.srcDirs = ["src/test/resources"]
+  }
+
+  publishing {
+    repositories {
+      maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/dansimpson/libs")
+        credentials {
+            username = System.getenv("GPR_USER") ?: 'dansimpson'
+            password = System.getenv("GPR_AUTH_TOKEN")
+        }
+      }
+    }
+    publications {
+      gpr(MavenPublication) {
+        groupId group
+        artifactId "${project.name}"
+        version version
+        // from components.java
+      }
+    }
+  }
+
+  test {
+    testLogging {
+      events "passed", "skipped", "failed"
+      exceptionFormat = 'full'
+    }
+  }
+
+}
+
