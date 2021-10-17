@@ -33,6 +33,7 @@ allprojects {
 
 subprojects {
   apply plugin: 'maven-publish'
+  apply plugin: 'java-library'
 
   sourceCompatibility = 11
   sourceSets.test {
@@ -52,12 +53,14 @@ subprojects {
     }
     publications {
       gpr(MavenPublication) {
-        groupId group
         artifactId "${project.name}"
+        groupId group
         version version
-        // from components.java
+        from components.java
       }
+
     }
+
   }
 
   test {
